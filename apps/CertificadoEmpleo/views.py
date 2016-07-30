@@ -1,11 +1,14 @@
 from io import BytesIO
+from django.contrib import messages
 
-from django.http.response import HttpResponse
+
+from django.http.response import HttpResponse, Http404
 from django.shortcuts import render, render_to_response
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 from apps.CertificadoEmpleo.forms import DatosForm
+from apps.CertificadoEmpleo.models import Empleado
 
 
 width, height = A4
@@ -14,15 +17,22 @@ width, height = A4
 def prueba(request):
     form = DatosForm(request.POST or None)
     message = ''
-
+    resultado =''
     if request.method == 'POST':
         if form.is_valid():
             message = form.cleaned_data['cedula']
-            if 'cedula' in request.POST:
+            try:
+                resultado=Empleado.objects.get(cedula=message)
+                if 'cedula' in request.POST:
+                    return generar_pdf(request, '{} {}'.format(resultado.nombre,resultado.apellido))
+            except Empleado.DoesNotExist:
+                resultado='No existe'
 
-                return generar_pdf(request, message)
 
-    context = {'message': message,'form': form }
+
+
+
+    context = {'message': message,'resultado':resultado,'form': form }
     return render(request, 'prueba.html', context)
 
 
