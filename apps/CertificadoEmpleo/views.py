@@ -1,4 +1,5 @@
 from io import BytesIO
+from os import startfile
 from django.contrib import messages
 
 
@@ -51,6 +52,7 @@ def generar_pdf(request, message):
     # Draw things on the PDF. Here's where the PDF generation happens.
     # See the ReportLab documentation for the full list of functionality.
     p.drawString(30, 750, "Hello world. " + message)
+    p.drawImage('static/nao.png',440,720,100,100)
 
     # Close the PDF object cleanly.
     p.showPage()
@@ -59,6 +61,7 @@ def generar_pdf(request, message):
     # Get the value of the BytesIO buffer and write it to the response.
     pdf = buffer.getvalue()
     buffer.close()
+    #startfile(pdf)
     response.write(pdf)
 
     # context = {'message' : message}
