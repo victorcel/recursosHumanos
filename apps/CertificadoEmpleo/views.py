@@ -30,9 +30,6 @@ def prueba(request):
                 resultado='No existe'
 
 
-
-
-
     context = {'message': message,'resultado':resultado,'form': form }
     return render(request, 'prueba.html', context)
 
